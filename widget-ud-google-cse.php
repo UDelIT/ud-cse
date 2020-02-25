@@ -1,26 +1,16 @@
-
 <?php
 /**
- * Plugin Name: UD Google Custom Search Engine (CSE) Widget
- * Description: A widget allows administrator's to add a Google Custom Search Engine to a sidebar.
- * Version: 1.0.0
- * Author: Christopher Leonard - University of Delaware | Information Technologies
- * Author URI:
- * License: GPL2
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
- * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * @package   Easy_Google_Fonts
- * @author    Christopher Leonard - University of Delaware | Information Technologies <consult@udel.edu>
- * @license   GPL-2.0+
- * @copyright Copyright (c) 2016, University of Delaware Information Technologies
- * @version   1.0.0
- *
- */
+  * UD Google Custom Search Engine (CSE) Widget
+  *
+  * A WordPress widget that allows administrator's to add their Google Custom Search Engine.
+  *
+  * @package     ud-cse
+  * @author      Christopher Leonard - University of Delaware
+  * @license     GPLv3
+  * @link        https://github.com/UDelIT/ud-cse/
+  * @copyright   Copyright (c) 2017-2020 University of Delaware
+  * @version     2.0.0
+*/
 
 if ( ! defined ( 'ABSPATH' ) ) {
     exit;
@@ -37,32 +27,35 @@ if ( ! defined ( 'ABSPATH' ) ) {
  * widget file.
  *
  * @var  string
- *
  * @since    1.0.0
 */
 
 if ( ! class_exists( 'UD_Google_CSE_Widget' ) ) :
-class UD_Google_CSE_Widget extends WP_Widget {
-/**
- * Register widget with WordPress.
-*/
+	class UD_Google_CSE_Widget extends WP_Widget {
+	/**
+ 		* REGISTER WIDGET
+ 		* Updated description and name.
+ 		* @version    2.0.0
+ 		* @since      1.0.0
+	*/
     public function __construct(){
-    $widget_ops = array('description' => 'Display Google Custom Search Engine.');
-        parent::__construct(
-            false,
-            $name='UD CSE Search',
-            $widget_ops
-        );
+    $widget_ops = array( 'description' => 'Display your Google Custom Search Engine.' );
+      parent::__construct(
+        false,
+        $name=' UD Google Custom Search (CSE) ',
+        $widget_ops
+      );
     }
 
-/**
- * Front-end display of widget.
- *
- * @see WP_Widget::widget()
- *
- * @param array $args     Widget arguments.
- * @param array $instance Saved values from database.
-*/
+	/**
+		* DISPLAY WIDGET ON FRONT END
+		* Google completely changed the API. Removed legacy code and replaced with latest rendition.
+ 		* @version    2.0.0
+ 		* @since      1.0.0
+		* @see WP_Widget::widget()
+		* @param array $args     Widget arguments.
+		* @param array $instance Saved values from database.
+	*/
     public function widget($args, $instance){
         extract($args);
         $cse_ID = empty($instance['cse_ID']) ? '' : $instance['cse_ID'];
@@ -71,6 +64,7 @@ class UD_Google_CSE_Widget extends WP_Widget {
         echo $before_widget;
         if ( $title ) echo $before_title . $title . $after_title;
 ?>
+
         <div id="search-form">
             <script>
               (function() {
@@ -78,7 +72,7 @@ class UD_Google_CSE_Widget extends WP_Widget {
                 var gcse = document.createElement('script');
                 gcse.type = 'text/javascript';
                 gcse.async = true;
-                gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+                gcse.src = 'https://cse.google.com/cse?cx=' + cx;
                 var s = document.getElementsByTagName('script')[0];
                 s.parentNode.insertBefore(gcse, s);
               })();
@@ -89,27 +83,28 @@ class UD_Google_CSE_Widget extends WP_Widget {
     echo $after_widget;
   }
 
-/**
-     * Back-end widget form.
-     *
-     * @see WP_Widget::form()
-     *
-     * @param array $instance Previously saved values from database.
- */
-    public function form($instance){
-        //Defaults
-        $instance = wp_parse_args( (array) $instance, array('cse_ID'=>'', 'title'=>'') );
+	/**
+  	* DASHBOARD WIDGET
+  	* Revised instructions to match latest Google UX
+    * @version    2.0.0
+    * @since      1.0.0
+    * @see WP_Widget::form()
+    * @param array $instance Previously saved values from database.
+ 	*/
+  public function form($instance){
+  	//Defaults
+    $instance = wp_parse_args( (array) $instance, array('cse_ID'=>'', 'title'=>'') );
 
-        $cse_ID = $instance['cse_ID'];
-        $title = $instance['title'];
+    $cse_ID = $instance['cse_ID'];
+    $title = $instance['title'];
 
-        # Description
-        echo '<p>See the <a href="https://www.google.com/cse" target="_blank">Google CSE dashboard</a> to obtain your Search Engine ID.</p>';
+    # Description
+    echo '<p>Your Search Engine ID is located in your <a href="https://cse.google.com/cse/all" target="_blank">Google CSE dashboard</a> under the <strong>Basics</strong> tab.</p>';
 
-        # CSE Label
-        echo '<p><label for="' . $this->get_field_id('title') . '">' . 'Title:' . '</label><input class="widefat" id="' . $this->get_field_id('title') . '" name="' . $this->get_field_name('title') . '" type="text" value="' . esc_html($title) . '" /></p>';
-        # Search Engine ID
-        echo '<p><label for="' . $this->get_field_id('cse_ID') . '">' . 'Search Engine ID:' . '</label><input class="widefat" id="' . $this->get_field_id('cse_ID') . '" name="' . $this->get_field_name('cse_ID') . '" type="text" value="' . esc_html($cse_ID) . '" /></p>';
+    # CSE Label
+    echo '<p><label for="' . $this->get_field_id('title') . '">' . 'Title:' . '</label><input class="widefat" id="' . $this->get_field_id('title') . '" name="' . $this->get_field_name('title') . '" type="text" value="' . esc_html($title) . '" /></p>';
+    # Search Engine ID
+    echo '<p><label for="' . $this->get_field_id('cse_ID') . '">' . 'Search engine ID:' . '</label><input class="widefat" id="' . $this->get_field_id('cse_ID') . '" name="' . $this->get_field_name('cse_ID') . '" type="text" value="' . esc_html($cse_ID) . '" /></p>';
     }
 /**
    * Sanitize widget form values as they are saved.
